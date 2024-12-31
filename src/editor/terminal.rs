@@ -1,9 +1,8 @@
 use crossterm::cursor::{Hide, MoveTo, Show};
-use crossterm::execute;
 use crossterm::queue;
 use crossterm::style::Print;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode, size, Clear, ClearType};
-use std::io::{stdout, Error, Result, Write};
+use std::io::{stdout, Error, Write};
 
 #[derive(Copy, Clone)]
 pub struct Size {
@@ -32,7 +31,6 @@ impl Terminal {
         disable_raw_mode()?;
         Ok(())
     }
-
     pub fn clear_screen() -> Result<(), Error> {
         queue!(stdout(), Clear(ClearType::All))?;
         Ok(())
@@ -41,11 +39,28 @@ impl Terminal {
         queue!(stdout(), Clear(ClearType::CurrentLine))?;
         Ok(())
     }
-    pub fn move_cursor_to(i: u16, j: u16) -> Result<(), std::io::Error> {
-        execute!(stdout(), MoveTo(i, j))?;
+    pub fn move_cursor_to(position: Position) -> Result<(), Error> {
+        queue!(stdout(), MoveTo(position.x, position.y))?;
         Ok(())
     }
-    pub fn size() -> Result<(u16, u16), std::io::Error> {
-        size()
+    pub fn hide_cursor() -> Result<(), Error> {
+        queue!(stdout(), Hide)?;
+        Ok(())
+    }
+    pub fn show_cursor() -> Result<(), Error> {
+        queue!(stdout(), Show)?;
+        Ok(())
+    }
+    pub fn print(string: &str) -> Result<(), Error> {
+        queue!(stdout(), Print(string))?;
+        Ok(())
+    }
+    pub fn size() -> Result<Size, Error> {
+        let (width, height) = size()?;
+        Ok(Size { height, width })
+    }
+    pub fn execute() -> Result<(), Error> {
+        stdout().flush()?;
+        Ok(())
     }
 }
