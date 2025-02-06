@@ -1,5 +1,5 @@
 use core::fmt::Display;
-use crossterm::cursor::{position, Hide, MoveTo, Show};
+use crossterm::cursor::{Hide, MoveTo, Show};
 use crossterm::style::Print;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode, size, Clear, ClearType};
 use crossterm::{queue, Command};
@@ -10,7 +10,7 @@ pub struct Size {
     pub height: usize,
     pub width: usize,
 }
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct Position {
     pub col: usize,
     pub row: usize,
@@ -60,7 +60,9 @@ impl Terminal {
         Ok(())
     }
     pub fn size() -> Result<Size, Error> {
-        let (width, height) = size()?;
+        let (width_u16, height_u16) = size()?;
+        let height = height_u16 as usize;
+        let width = width_u16 as usize;
         Ok(Size { height, width })
     }
     pub fn execute() -> Result<(), Error> {
