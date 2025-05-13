@@ -27,6 +27,13 @@ After building, execute:
 
 This command launches the text editor.
 
+### Opening text files:
+
+In your command line, try 
+
+``` cargo run <file_name>```
+
+Please note that files outside the project directory are to be named with their file destination source.
 ## Future Features
 
 Planned enhancements for Typewriter include:
